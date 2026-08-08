@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKALA·SHOP TERMINAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --shell:#1B1F23;
+    --shell-raised:#22262b;
+    --desk:#23201c;
+    --paper:#FBF7EE;
+    --paper-dim:#f1ecdd;
+    --ink:#2a2620;
+    --ink-dim:#7a7568;
+    --hair:#d8d0ba;
+    --brass:#C97A2B;
+    --brass-deep:#a5611c;
+    --stamp-green:#3f6b52;
+    --stamp-green-bg:#e4efe6;
+    --stamp-red:#a5382f;
+    --stamp-red-bg:#f4e5e2;
+    --stamp-amber-bg:#f8ecd8;
+    --chrome:#3a4046;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top, #2b2621 0%, var(--desk) 60%);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR', sans-serif;
+    min-height:100vh;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  /* ===== shell / header ===== */
+  .shell-header{
+    background:linear-gradient(180deg, var(--shell-raised), var(--shell));
+    border-bottom:3px solid var(--brass-deep);
+    padding:14px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 4px 14px rgba(0,0,0,.4);
+    position:sticky;
+    top:0;
+    z-index:50;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--brass);
+    box-shadow:0 0 8px 2px rgba(201,122,43,.7);
+  }
+  .brand h1{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:800;
+    font-size:15px;
+    letter-spacing:.14em;
+    color:var(--paper);
+    margin:0;
+  }
+  .brand small{
+    display:block;
+    color:#8b8d90;
+    font-size:10px;
+    letter-spacing:.1em;
+    margin-top:2px;
+  }
+  .session-readout{
+    display:flex; align-items:center; gap:16px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .led-panel{
+    background:#0e1113;
+    border:1px solid #000;
+    border-radius:4px;
+    padding:6px 14px;
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.6);
+    min-width:170px;
+  }
+  .led-panel .row{display:flex; justify-content:space-between; gap:14px; font-size:11px;}
+  .led-panel .label{color:#5c6a5f; letter-spacing:.08em;}
+  .led-panel .value{color:#7fd99a; font-weight:700; text-shadow:0 0 6px rgba(127,217,154,.5);}
+  .led-panel .value.empty{color:#5c6a5f;}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid #4a5157;
+    color:#c7cacd;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:7px 12px;
+    border-radius:3px;
+    cursor:pointer;
+    letter-spacing:.05em;
+  }
+  .btn-ghost:hover{border-color:var(--brass); color:var(--brass);}
+
+  /* ===== layout ===== */
+  .layout{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:22px;
+    max-width:1280px;
+    margin:26px auto;
+    padding:0 20px 60px;
+    align-items:start;
+  }
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr;}
+  }
+
+  /* ===== auth panel (sidebar) ===== */
+  .panel{
+    background:var(--paper);
+    border-radius:3px;
+    box-shadow:0 10px 26px rgba(0,0,0,.35);
+    position:relative;
+  }
+  .panel::before{
+    content:"";
+    position:absolute; inset:0;
+    border-radius:3px;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
+    pointer-events:none;
+  }
+  .panel-head{
+    padding:14px 16px 10px;
+    border-bottom:1px dashed var(--hair);
+  }
+  .panel-head .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:.16em;
+    color:var(--brass-deep);
+    font-weight:700;
+  }
+  .panel-head h2{
+    margin:4px 0 0;
+    font-size:15px;
+    font-weight:700;
+  }
+  .panel-body{padding:16px;}
+
+  .field{margin-bottom:12px;}
+  .field label{
+    display:block;
+    font-size:11px;
+    color:var(--ink-dim);
+    margin-bottom:5px;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:.04em;
+  }
+  .field input{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--hair);
+    border-radius:2px;
+    background:#fff;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--ink);
+  }
+  .field input:focus{outline:2px solid var(--brass); outline-offset:1px;}
+
+  .btn-primary{
+    width:100%;
+    background:var(--brass);
+    border:none;
+    color:#1b1207;
+    font-weight:700;
+    font-size:13px;
+    padding:10px;
+    border-radius:2px;
+    cursor:pointer;
+    letter-spacing:.03em;
+    box-shadow:0 3px 0 var(--brass-deep);
+  }
+  .btn-primary:active{transform:translateY(2px); box-shadow:none;}
+  .btn-primary:disabled{opacity:.5; cursor:not-allowed; box-shadow:none;}
+  .btn-secondary{
+    width:100%;
+    background:transparent;
+    border:1px solid var(--ink-dim);
+    color:var(--ink);
+    font-weight:600;
+    font-size:12px;
+    padding:8px;
+    border-radius:2px;
+    cursor:pointer;
+    margin-top:8px;
+  }
+  .toggle-link{
+    display:block;
+    text-align:center;
+    margin-top:10px;
+    font-size:11px;
+    color:var(--ink-dim);
+    text-decoration:underline;
+    cursor:pointer;
+    background:none; border:none;
+  }
+  .field-error{color:var(--stamp-red); font-size:11px; margin-top:6px; font-family:'JetBrains Mono',monospace;}
+
+  .session-card .who{font-size:20px; font-weight:800; font-family:'JetBrains Mono', monospace;}
+  .session-card .balance{
+    margin-top:10px; padding:12px; background:var(--paper-dim);
+    border-radius:2px; text-align:center;
+  }
+  .session-card .balance .label{font-size:10px; letter-spacing:.12em; color:var(--ink-dim);}
+  .session-card .balance .amt{font-size:26px; font-weight:800; font-family:'JetBrains Mono', monospace; color:var(--stamp-green);}
+
+  /* ===== main area ===== */
+  .main{display:flex; flex-direction:column; gap:20px;}
+  .tabs{display:flex; gap:6px;}
+  .tab-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.05em;
+    background:var(--shell-raised);
+    color:#9a9d9f;
+    border:none;
+    padding:10px 16px;
+    border-radius:3px 3px 0 0;
+    cursor:pointer;
+  }
+  .tab-btn.active{background:var(--paper); color:var(--ink); font-weight:700;}
+
+  .tab-panel{background:var(--paper); border-radius:0 3px 3px 3px; padding:18px; box-shadow:0 10px 26px rgba(0,0,0,.35);}
+  .tab-panel.hidden{display:none;}
+
+  .section-title{
+    font-size:11px; letter-spacing:.14em; color:var(--brass-deep);
+    font-family:'JetBrains Mono', monospace; font-weight:700; margin-bottom:10px;
+  }
+
+  /* product grid */
+  .product-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:12px;}
+  .price-tag{
+    border:1px dashed var(--hair);
+    border-radius:2px;
+    padding:12px;
+    position:relative;
+    background:#fff;
+  }
+  .price-tag::before{
+    content:"";
+    position:absolute; left:-6px; top:50%; transform:translateY(-50%);
+    width:10px;height:10px;border-radius:50%;
+    background:var(--desk);
+  }
+  .price-tag .name{font-weight:700; font-size:13px; margin-bottom:6px;}
+  .price-tag .price{font-family:'JetBrains Mono', monospace; font-weight:800; color:var(--brass-deep); font-size:16px;}
+  .price-tag .stock{font-size:11px; color:var(--ink-dim); margin:4px 0 10px; font-family:'JetBrains Mono', monospace;}
+  .qty-row{display:flex; gap:6px;}
+  .qty-row input{width:56px; padding:6px; border:1px solid var(--hair); border-radius:2px; font-family:'JetBrains Mono', monospace;}
+  .qty-row button{
+    flex:1; background:var(--stamp-green); color:#fff; border:none; border-radius:2px;
+    font-size:12px; font-weight:700; cursor:pointer;
+  }
+  .qty-row button:disabled{background:#aaa; cursor:not-allowed;}
+
+  /* holdings */
+  .holding-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 4px; border-bottom:1px dashed var(--hair); font-size:13px;
+  }
+  .holding-row .meta{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-dim);}
+  .holding-row button{
+    background:var(--stamp-red); color:#fff; border:none; border-radius:2px;
+    padding:6px 10px; font-size:11px; cursor:pointer;
+  }
+  .empty-state{color:var(--ink-dim); font-size:13px; padding:20px 0; text-align:center; font-family:'JetBrains Mono', monospace;}
+
+  /* stats */
+  .stat-block{margin-bottom:22px;}
+  .stat-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  .stat-table th{
+    text-align:left; font-family:'JetBrains Mono', monospace; font-size:10px;
+    letter-spacing:.08em; color:var(--ink-dim); border-bottom:1px solid var(--hair); padding:6px 6px;
+  }
+  .stat-table td{padding:6px 6px; border-bottom:1px dashed var(--hair); font-family:'JetBrains Mono', monospace;}
+  .bar-cell{display:flex; align-items:center; gap:8px;}
+  .bar-track{flex:1; background:var(--paper-dim); height:10px; border-radius:2px; overflow:hidden;}
+  .bar-fill{height:100%; background:var(--brass);}
+
+  /* ===== receipt tape (signature element) ===== */
+  .tape-wrap{
+    background:var(--shell);
+    border-radius:3px;
+    padding:16px 16px 4px;
+    box-shadow:inset 0 3px 10px rgba(0,0,0,.5);
+  }
+  .tape-title{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.14em;
+    color:#8b8d90; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .tape-title button{
+    background:none; border:1px solid #4a5157; color:#9a9d9f; font-size:10px;
+    padding:4px 8px; border-radius:2px; cursor:pointer; font-family:'JetBrains Mono', monospace;
+  }
+  .tape-scroll{max-height:420px; overflow-y:auto; padding-bottom:14px;}
+  .receipt{
+    background:var(--paper);
+    margin:0 0 10px;
+    padding:10px 14px 12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    position:relative;
+    clip-path:polygon(
+      0% 4px, 2% 0%, 4% 4px, 6% 0%, 8% 4px, 10% 0%, 12% 4px, 14% 0%, 16% 4px, 18% 0%, 20% 4px, 22% 0%, 24% 4px, 26% 0%, 28% 4px, 30% 0%, 32% 4px, 34% 0%, 36% 4px, 38% 0%, 40% 4px, 42% 0%, 44% 4px, 46% 0%, 48% 4px, 50% 0%, 52% 4px, 54% 0%, 56% 4px, 58% 0%, 60% 4px, 62% 0%, 64% 4px, 66% 0%, 68% 4px, 70% 0%, 72% 4px, 74% 0%, 76% 4px, 78% 0%, 80% 4px, 82% 0%, 84% 4px, 86% 0%, 88% 4px, 90% 0%, 92% 4px, 94% 0%, 96% 4px, 98% 0%, 100% 4px,
+      100% 100%, 0% 100%
+    );
+    box-shadow:0 6px 14px rgba(0,0,0,.35);
+    animation:print-out .28s ease-out;
+  }
+  @keyframes print-out{
+    from{transform:translateY(-8px); opacity:0;}
+    to{transform:translateY(0); opacity:1;}
+  }
+  .receipt .rline{display:flex; justify-content:space-between; gap:10px; margin-bottom:2px;}
+  .receipt .method{font-weight:700;}
+  .receipt .path{color:var(--ink-dim); word-break:break-all;}
+  .stamp{
+    display:inline-block; padding:2px 8px; border-radius:2px; font-weight:800;
+    font-size:10px; letter-spacing:.08em; transform:rotate(-3deg);
+  }
+  .stamp.SUCCESS{background:var(--stamp-green-bg); color:var(--stamp-green); border:1.5px solid var(--stamp-green);}
+  .stamp.REJECTED{background:var(--stamp-amber-bg); color:var(--brass-deep); border:1.5px solid var(--brass-deep);}
+  .stamp.FAILED{background:var(--stamp-red-bg); color:var(--stamp-red); border:1.5px solid var(--stamp-red);}
+  .raw-toggle{
+    background:none; border:none; color:var(--brass-deep); font-size:10.5px; cursor:pointer;
+    padding:4px 0 0; font-family:'JetBrains Mono', monospace; text-decoration:underline;
+  }
+  .raw-body{
+    display:none; margin-top:8px; background:var(--paper-dim); padding:8px; border-radius:2px;
+    font-size:10.5px; white-space:pre-wrap; word-break:break-all; max-height:220px; overflow-y:auto;
+  }
+  .raw-body.open{display:block;}
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--shell); color:var(--paper); padding:10px 18px; border-radius:3px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; box-shadow:0 8px 20px rgba(0,0,0,.4);
+    opacity:0; pointer-events:none; transition:opacity .25s; z-index:100;
+  }
+  .toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="shell-header">
+  <div class="brand">
+    <span class="dot"></span>
+    <div>
+      <h1>SKALA · SHOP TERMINAL</h1>
+      <small>API 실사용 테스트 콘솔 — Swagger 대체용</small>
+    </div>
+  </div>
+  <div class="session-readout">
+    <div class="led-panel">
+      <div class="row"><span class="label">SESSION</span><span class="value mono" id="hdrCustomer">─</span></div>
+      <div class="row"><span class="label">POINT</span><span class="value mono" id="hdrPoint">─</span></div>
+    </div>
+    <button class="btn-ghost" id="logoutBtn" style="display:none;">로그아웃</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ===== LEFT: Auth panel ===== -->
+  <div class="panel" id="authPanel">
+    <div class="panel-head">
+      <div class="eyebrow">AUTH</div>
+      <h2 id="authTitle">로그인</h2>
+    </div>
+    <div class="panel-body" id="authBody">
+      <div class="field">
+        <label for="loginId">CUSTOMER ID</label>
+        <input id="loginId" type="text" placeholder="skala01">
+      </div>
+      <div class="field">
+        <label for="loginPw">PASSWORD</label>
+        <input id="loginPw" type="password" placeholder="pw1234">
+      </div>
+      <div class="field-error" id="loginError"></div>
+      <button class="btn-primary" id="loginBtn">로그인</button>
+      <button class="toggle-link" id="toSignupBtn">계정이 없나요? 회원가입</button>
+    </div>
+  </div>
+
+  <!-- ===== RIGHT: main ===== -->
+  <div class="main">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="products">상품</button>
+      <button class="tab-btn" data-tab="holdings">보유내역</button>
+      <button class="tab-btn" data-tab="stats">통계</button>
+    </div>
+
+    <div class="tab-panel" id="tab-products">
+      <div class="section-title">PRODUCT LIST · GET /api/products</div>
+      <div class="product-grid" id="productGrid"><div class="empty-state">불러오는 중...</div></div>
+    </div>
+
+    <div class="tab-panel hidden" id="tab-holdings">
+      <div class="section-title">MY HOLDINGS · GET /api/customers/{id}/products</div>
+      <div id="holdingList"><div class="empty-state">로그인 후 확인 가능합니다</div></div>
+    </div>
+
+    <div class="tab-panel hidden" id="tab-stats">
+      <div class="section-title">SALES STATISTICS (MyBatis)</div>
+      <div id="statsArea"><div class="empty-state">불러오는 중...</div></div>
+    </div>
+
+    <!-- signature: receipt tape log -->
+    <div class="tape-wrap">
+      <div class="tape-title">
+        <span>◈ TRANSACTION TAPE — 모든 API 호출의 실제 요청/응답</span>
+        <button id="clearTapeBtn">지우기</button>
+      </div>
+      <div class="tape-scroll" id="tapeScroll"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   설정
+   ============================================================ */
+const API_BASE = "https://skala-test-spring.onrender.com"; // 배포 주소로 교체 가능
+
+let session = { customerId: null, point: null };
+
+/* ============================================================
+   공통 fetch 래퍼 - 모든 호출을 영수증 테이프에 기록
+   ============================================================ */
+async function callApi(method, path, body) {
+  const startedAt = new Date();
+  let status = 0, resJson = null, resText = "", errorCode = null, ok = false;
+
+  try {
+    const res = await fetch(API_BASE + path, {
+      method,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      credentials: "include",
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    status = res.status;
+    ok = res.ok;
+    resText = await res.text();
+    try { resJson = resText ? JSON.parse(resText) : null; } catch (e) { resJson = null; }
+    if (resJson && resJson.errorCode) errorCode = resJson.errorCode;
+  } catch (e) {
+    status = 0;
+    resText = String(e);
+  }
+
+  let tapeStatus;
+  if (status >= 200 && status < 300) tapeStatus = "SUCCESS";
+  else if (status === 400 || status === 401 || status === 404 || status === 409) tapeStatus = "REJECTED";
+  else tapeStatus = "FAILED";
+
+  printReceipt({
+    time: startedAt,
+    method, path, requestBody: body,
+    status, tapeStatus, responseBody: resJson !== null ? resJson : resText,
+  });
+
+  return { ok, status, data: resJson, errorCode };
+}
+
+/* ============================================================
+   영수증 테이프 렌더링
+   ============================================================ */
+function printReceipt({ time, method, path, requestBody, status, tapeStatus, responseBody }) {
+  const el = document.createElement("div");
+  el.className = "receipt";
+  const timeStr = time.toTimeString().slice(0,8);
+  const reqStr = requestBody ? JSON.stringify(requestBody, null, 2) : "(없음)";
+  const resStr = typeof responseBody === "string" ? responseBody : JSON.stringify(responseBody, null, 2);
+
+  el.innerHTML = `
+    <div class="rline">
+      <span><span class="method">${method}</span> <span class="path">${path}</span></span>
+      <span class="stamp ${tapeStatus}">${tapeStatus}</span>
+    </div>
+    <div class="rline">
+      <span style="color:var(--ink-dim)">${timeStr} · HTTP ${status || "네트워크 오류"}</span>
+    </div>
+    <button class="raw-toggle">▸ Raw Request / Response 보기</button>
+    <div class="raw-body">REQUEST\n${reqStr}\n\nRESPONSE\n${resStr}</div>
+  `;
+  el.querySelector(".raw-toggle").addEventListener("click", (e) => {
+    const body = el.querySelector(".raw-body");
+    body.classList.toggle("open");
+    e.target.textContent = body.classList.contains("open") ? "▾ 접기" : "▸ Raw Request / Response 보기";
+  });
+
+  const scroll = document.getElementById("tapeScroll");
+  scroll.prepend(el);
+}
+
+document.getElementById("clearTapeBtn").addEventListener("click", () => {
+  document.getElementById("tapeScroll").innerHTML = "";
+});
+
+/* ============================================================
+   토스트
+   ============================================================ */
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ============================================================
+   세션 UI 갱신
+   ============================================================ */
+function renderSession() {
+  const hdrC = document.getElementById("hdrCustomer");
+  const hdrP = document.getElementById("hdrPoint");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (session.customerId) {
+    hdrC.textContent = session.customerId;
+    hdrC.classList.remove("empty");
+    hdrP.textContent = session.point !== null ? session.point.toLocaleString() + "P" : "─";
+    hdrP.classList.remove("empty");
+    logoutBtn.style.display = "inline-block";
+
+    document.getElementById("authTitle").textContent = "세션 정보";
+    document.getElementById("authBody").innerHTML = `
+      <div class="session-card">
+        <div class="who">${session.customerId}</div>
+        <div class="balance">
+          <div class="label">보유 포인트</div>
+          <div class="amt">${session.point !== null ? session.point.toLocaleString() : "─"}</div>
+        </div>
+      </div>
+    `;
+  } else {
+    hdrC.textContent = "─"; hdrC.classList.add("empty");
+    hdrP.textContent = "─"; hdrP.classList.add("empty");
+    logoutBtn.style.display = "none";
+  }
+}
+
+/* ============================================================
+   로그인 / 회원가입
+   ============================================================ */
+let authMode = "login"; // login | signup
+
+function renderAuthForm() {
+  if (session.customerId) return; // 로그인 상태면 세션 카드가 대신 표시됨
+
+  document.getElementById("authTitle").textContent = authMode === "login" ? "로그인" : "회원가입";
+  document.getElementById("authBody").innerHTML = `
+    <div class="field">
+      <label>CUSTOMER ID</label>
+      <input id="loginId" type="text" placeholder="skala01">
+    </div>
+    ${authMode === "signup" ? `
+    <div class="field">
+      <label>NAME</label>
+      <input id="loginName" type="text" placeholder="홍길동">
+    </div>` : ""}
+    <div class="field">
+      <label>PASSWORD</label>
+      <input id="loginPw" type="password" placeholder="pw1234">
+    </div>
+    <div class="field-error" id="loginError"></div>
+    <button class="btn-primary" id="submitAuthBtn">${authMode === "login" ? "로그인" : "회원가입"}</button>
+    <button class="toggle-link" id="toggleAuthBtn">${authMode === "login" ? "계정이 없나요? 회원가입" : "이미 계정이 있나요? 로그인"}</button>
+  `;
+
+  document.getElementById("submitAuthBtn").addEventListener("click", handleAuthSubmit);
+  document.getElementById("toggleAuthBtn").addEventListener("click", () => {
+    authMode = authMode === "login" ? "signup" : "login";
+    renderAuthForm();
+  });
+}
+
+async function handleAuthSubmit() {
+  const id = document.getElementById("loginId").value.trim();
+  const pw = document.getElementById("loginPw").value;
+  const errEl = document.getElementById("loginError");
+  errEl.textContent = "";
+
+  if (!id || !pw) { errEl.textContent = "ID/PW를 입력하세요."; return; }
+
+  if (authMode === "signup") {
+    const name = document.getElementById("loginName").value.trim();
+    if (!name) { errEl.textContent = "이름을 입력하세요."; return; }
+    const res = await callApi("POST", "/api/customers", { customerId: id, customerPassword: pw, customerName: name });
+    if (!res.ok) { errEl.textContent = `회원가입 실패: ${res.errorCode || res.status}`; return; }
+    toast("회원가입 완료. 이제 로그인하세요.");
+    authMode = "login";
+    renderAuthForm();
+    return;
+  }
+
+  const res = await callApi("POST", "/api/customers/login", { customerId: id, customerPassword: pw });
+  if (!res.ok) { errEl.textContent = `로그인 실패: ${res.errorCode || res.status}`; return; }
+
+  session.customerId = id;
+  await refreshSession();
+  toast(`${id} 님 환영합니다.`);
+  loadHoldings();
+}
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  session = { customerId: null, point: null };
+  renderSession();
+  authMode = "login";
+  renderAuthForm();
+  document.getElementById("holdingList").innerHTML = `<div class="empty-state">로그인 후 확인 가능합니다</div>`;
+  toast("로그아웃 되었습니다 (클라이언트 세션만 초기화됨).");
+});
+
+async function refreshSession() {
+  if (!session.customerId) return;
+  const res = await callApi("GET", `/api/customers/${session.customerId}`);
+  if (res.ok && res.data) {
+    session.point = res.data.point;
+  }
+  renderSession();
+}
+
+/* ============================================================
+   탭 전환
+   ============================================================ */
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.remove("hidden");
+    if (btn.dataset.tab === "holdings") loadHoldings();
+    if (btn.dataset.tab === "stats") loadStats();
+  });
+});
+
+/* ============================================================
+   상품 목록 + 주문
+   ============================================================ */
+async function loadProducts() {
+  const grid = document.getElementById("productGrid");
+  const res = await callApi("GET", "/api/products?size=50");
+  if (!res.ok || !res.data) {
+    grid.innerHTML = `<div class="empty-state">상품을 불러오지 못했습니다.</div>`;
+    return;
+  }
+  const items = res.data.content || res.data;
+  if (!items || items.length === 0) {
+    grid.innerHTML = `<div class="empty-state">등록된 상품이 없습니다.</div>`;
+    return;
+  }
+  grid.innerHTML = "";
+  items.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "price-tag";
+    card.innerHTML = `
+      <div class="name">${p.name}</div>
+      <div class="price">₩${p.price.toLocaleString()}</div>
+      <div class="stock">재고 ${p.stock}개</div>
+      <div class="qty-row">
+        <input type="number" min="1" value="1" id="qty-${p.id}">
+        <button ${session.customerId ? "" : "disabled"} data-id="${p.id}">주문</button>
+      </div>
+    `;
+    card.querySelector("button").addEventListener("click", async () => {
+      if (!session.customerId) { toast("로그인이 필요합니다."); return; }
+      const qty = parseInt(document.getElementById(`qty-${p.id}`).value, 10) || 1;
+      const res = await callApi("POST", "/api/customers/order", { productId: p.id, quantity: qty });
+      if (res.ok) {
+        toast(`주문 완료 · 남은 포인트 ${res.data.remainingPoint.toLocaleString()}`);
+        session.point = res.data.remainingPoint;
+        renderSession();
+        loadProducts();
+        loadHoldings();
+      } else {
+        toast(`주문 실패: ${res.errorCode || res.status}`);
+      }
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* ============================================================
+   보유내역 + 취소
+   ============================================================ */
+async function loadHoldings() {
+  const list = document.getElementById("holdingList");
+  if (!session.customerId) {
+    list.innerHTML = `<div class="empty-state">로그인 후 확인 가능합니다</div>`;
+    return;
+  }
+  const res = await callApi("GET", `/api/customers/${session.customerId}/products`);
+  if (!res.ok || !res.data || res.data.length === 0) {
+    list.innerHTML = `<div class="empty-state">보유 중인 상품이 없습니다.</div>`;
+    return;
+  }
+  list.innerHTML = "";
+  res.data.forEach(h => {
+    const row = document.createElement("div");
+    row.className = "holding-row";
+    row.innerHTML = `
+      <div>
+        <div>${h.productName} × ${h.quantity}</div>
+        <div class="meta">최근 주문 ${h.orderedAt ? h.orderedAt.replace("T"," ") : "-"}</div>
+      </div>
+      <button>1개 취소</button>
+    `;
+    row.querySelector("button").addEventListener("click", async () => {
+      const res = await callApi("POST", "/api/customers/cancel", { productId: h.productId, quantity: 1 });
+      if (res.ok) {
+        toast(`취소 완료 · 남은 포인트 ${res.data.remainingPoint.toLocaleString()}`);
+        session.point = res.data.remainingPoint;
+        renderSession();
+        loadHoldings();
+        loadProducts();
+      } else {
+        toast(`취소 실패: ${res.errorCode || res.status}`);
+      }
+    });
+    list.appendChild(row);
+  });
+}
+
+/* ============================================================
+   통계
+   ============================================================ */
+async function loadStats() {
+  const area = document.getElementById("statsArea");
+  area.innerHTML = `<div class="empty-state">불러오는 중...</div>`;
+
+  const [products, daily, categories, cancelRate, suppliers] = await Promise.all([
+    callApi("GET", "/api/stats/products"),
+    callApi("GET", "/api/stats/daily"),
+    callApi("GET", "/api/stats/categories"),
+    callApi("GET", "/api/stats/cancel-rate"),
+    callApi("GET", "/api/stats/suppliers"),
+  ]);
+
+  area.innerHTML = "";
+
+  area.appendChild(renderStatBlock("상품별 판매 통계", products.data, [
+    { key: "productName", label: "상품" },
+    { key: "netQuantity", label: "순수량" },
+    { key: "netRevenue", label: "순매출", isMoney: true, bar: true },
+    { key: "totalMargin", label: "마진", isMoney: true },
+  ]));
+
+  area.appendChild(renderStatBlock("일별 매출 추이", daily.data, [
+    { key: "orderDate", label: "날짜" },
+    { key: "netQuantity", label: "순수량" },
+    { key: "netRevenue", label: "순매출", isMoney: true, bar: true },
+  ]));
+
+  area.appendChild(renderStatBlock("카테고리별 판매 비중", categories.data, [
+    { key: "categoryName", label: "카테고리" },
+    { key: "netRevenue", label: "순매출", isMoney: true, bar: true },
+  ]));
+
+  area.appendChild(renderStatBlock("상품별 취소율", cancelRate.data, [
+    { key: "productName", label: "상품" },
+    { key: "totalOrderCount", label: "주문수" },
+    { key: "totalCancelCount", label: "취소수" },
+    { key: "cancelRate", label: "취소율(%)", bar: true, max: 100 },
+  ]));
+
+  area.appendChild(renderStatBlock("공급업체별 실적", suppliers.data, [
+    { key: "supplierName", label: "공급업체" },
+    { key: "totalPurchaseAmount", label: "매입액", isMoney: true },
+    { key: "totalSalesAmount", label: "판매액", isMoney: true, bar: true },
+  ]));
+}
+
+function renderStatBlock(title, rows, cols) {
+  const wrap = document.createElement("div");
+  wrap.className = "stat-block";
+  if (!rows || rows.length === 0) {
+    wrap.innerHTML = `<div class="section-title">${title}</div><div class="empty-state">데이터가 없습니다.</div>`;
+    return wrap;
+  }
+  const barCol = cols.find(c => c.bar);
+  const maxVal = barCol ? Math.max(...rows.map(r => Number(r[barCol.key]) || 0), 1) : 1;
+
+  let thead = "<tr>" + cols.map(c => `<th>${c.label}</th>`).join("") + "</tr>";
+  let tbody = rows.slice(0, 15).map(r => {
+    return "<tr>" + cols.map(c => {
+      const v = r[c.key];
+      if (c.bar) {
+        const pct = c.max ? (Number(v) / c.max) * 100 : (Number(v) / maxVal) * 100;
+        const display = c.isMoney ? "₩" + Number(v).toLocaleString() : v;
+        return `<td><div class="bar-cell"><span>${display}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div></div></td>`;
+      }
+      return `<td>${c.isMoney ? "₩" + Number(v).toLocaleString() : (v ?? "-")}</td>`;
+    }).join("") + "</tr>";
+  }).join("");
+
+  wrap.innerHTML = `
+    <div class="section-title">${title}</div>
+    <table class="stat-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>
+  `;
+  return wrap;
+}
+
+/* ============================================================
+   초기 구동
+   ============================================================ */
+renderAuthForm();
+renderSession();
+loadProducts();
+</script>
+</body>
+</html>
