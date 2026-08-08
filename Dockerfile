@@ -22,6 +22,9 @@ WORKDIR /app
 
 # non-root 사용자로 실행 (보안 관례)
 RUN addgroup --system spring && adduser --system --ingroup spring spring
+# logs 디렉토리를 미리 만들고 spring 사용자에게 쓰기 권한 부여
+RUN mkdir -p /app/logs && chown -R spring:spring /app
+
 USER spring:spring
 
 COPY --from=build /app/build/libs/*.jar app.jar
