@@ -1,0 +1,8 @@
+spring:
+  sql:
+    init:
+      mode: never   # 테스트에서는 운영용 data.sql을 자동 실행하지 않는다 (매 테스트마다 대량 데이터가 깔리는 것 방지)
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skala.shop.mapper.StatsMapper">
+
+    <select id="selectProductSalesStats" resultType="com.skala.shop.data.dto.ProductSalesStatDto">
+        SELECT
+            p.id                                                     AS productId,
+            p.name                                                   AS productName,
+            SUM(CASE WHEN ol.type = 'ORDER' THEN ol.quantity
+                     ELSE -ol.quantity END)                          AS netQuantity,
+            SUM(CASE WHEN ol.type = 'ORDER' THEN ol.quantity * ol.price_at_order
+                     ELSE -(ol.quantity * ol.price_at_order) END)     AS netRevenue,
+            CASE WHEN p.cost_price IS NULL THEN NULL
+                 ELSE SUM(CASE WHEN ol.type = 'ORDER' THEN ol.quantity
+                               ELSE -ol.quantity END)
+                      * (p.price - p.cost_price)
+            END                                                       AS totalMargin
+        FROM product p
+        JOIN order_log ol ON ol.product_id = p.id
+        GROUP BY p.id, p.name, p.price, p.cost_price
+        ORDER BY netRevenue DESC
+    </select>
+
+    <select id="selectDailySalesStats" resultType="com.skala.shop.data.dto.DailySalesStatDto">
+        SELECT
+            FORMATDATETIME(ol.created_at, 'yyyy-MM-dd')                     AS orderDate,
+            SUM(CASE WHEN ol.type = 'ORDER' THEN ol.quantity
+                    ELSE -ol.quantity END)                                  AS netQuantity,
+            SUM(CASE WHEN ol.type = 'ORDER' THEN ol.quantity * ol.price_at_order
+                    ELSE -(ol.quantity * ol.price_at_order) END)            AS netRevenue
+        FROM order_log ol
+        GROUP BY FORMATDATETIME(ol.created_at, 'yyyy-MM-dd')
+        ORDER BY orderDate DESC
+    </select>
+
+
+    <select id="selectCategorySalesStats" resultType="com.skala.shop.data.dto.CategorySalesStatDto">
+        SELECT
+            c.id                                                              AS categoryId,
+            COALESCE(c.name, '미분류')                                        AS categoryName,
+            SUM(CASE WHEN ol.type = 'ORDER' THEN ol.quantity * ol.price_at_order
+                    ELSE -(ol.quantity * ol.price_at_order) END)             AS netRevenue
+        FROM order_log ol
+        JOIN product p ON p.id = ol.product_id
+        LEFT JOIN category c ON c.id = p.category_id
+        GROUP BY c.id, c.name
+        ORDER BY netRevenue DESC
+    </select>
+
+    <select id="selectCancelRateStats" resultType="com.skala.shop.data.dto.CancelRateStatDto">
+        SELECT
+            p.id                                                              AS productId,
+            p.name                                                            AS productName,
+            SUM(CASE WHEN ol.type = 'ORDER' THEN 1 ELSE 0 END)                AS totalOrderCount,
+            SUM(CASE WHEN ol.type = 'CANCEL' THEN 1 ELSE 0 END)               AS totalCancelCount,
+            ROUND(
+                CAST(SUM(CASE WHEN ol.type = 'CANCEL' THEN 1 ELSE 0 END) AS DOUBLE)
+                / NULLIF(SUM(CASE WHEN ol.type = 'ORDER' THEN 1 ELSE 0 END), 0)
+                * 100, 2
+            )                                                                  AS cancelRate
+        FROM product p
+        JOIN order_log ol ON ol.product_id = p.id
+        GROUP BY p.id, p.name
+        HAVING SUM(CASE WHEN ol.type = 'ORDER' THEN 1 ELSE 0 END) > 0
+        ORDER BY cancelRate DESC
+    </select>
+
+    <select id="selectSupplierPerformanceStats" resultType="com.skala.shop.data.dto.SupplierPerformanceStatDto">
+        SELECT
+            s.id                                            AS supplierId,
+            s.name                                           AS supplierName,
+            COALESCE(purchase.amount, 0)                     AS totalPurchaseAmount,
+            COALESCE(sales.amount, 0)                        AS totalSalesAmount
+        FROM supplier s
+        LEFT JOIN (
+            SELECT p.supplier_id AS supplier_id,
+                SUM(sh.amount * sh.unit_cost) AS amount
+            FROM stock_history sh
+            JOIN product p ON p.id = sh.product_id
+            WHERE sh.reason = 'PURCHASE_IN' AND sh.unit_cost IS NOT NULL
+            GROUP BY p.supplier_id
+        ) purchase ON purchase.supplier_id = s.id
+        LEFT JOIN (
+            SELECT p.supplier_id AS supplier_id,
+                SUM(CASE WHEN ol.type = 'ORDER' THEN ol.quantity * ol.price_at_order
+                            ELSE -(ol.quantity * ol.price_at_order) END) AS amount
+            FROM order_log ol
+            JOIN product p ON p.id = ol.product_id
+            GROUP BY p.supplier_id
+        ) sales ON sales.supplier_id = s.id
+        ORDER BY totalSalesAmount DESC
+</select>
+</mapper>

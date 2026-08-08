@@ -1,0 +1,129 @@
+<svg width="1200" height="820" viewBox="0 0 1200 820" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1200" height="820" fill="#ffffff"/>
+
+  <!-- ============ 스타일 헬퍼 ============ -->
+  <!-- 색상: Customer=파랑, Product=초록, Holding/OrderLog=주황, Supplier/Category=회색 -->
+
+  <!-- ============ SUPPLIER ============ -->
+  <g>
+    <rect x="40" y="40" width="220" height="110" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="1"/>
+    <rect x="40" y="40" width="220" height="30" rx="8" fill="#5F5E5A"/>
+    <rect x="40" y="55" width="220" height="15" fill="#5F5E5A"/>
+    <text x="150" y="60" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">SUPPLIER</text>
+    <text x="55" y="90" font-size="12" fill="#2C2C2A">PK  id : long</text>
+    <text x="55" y="110" font-size="12" fill="#2C2C2A">     name : string</text>
+    <text x="55" y="130" font-size="11" fill="#888780">(nullable FK from Product)</text>
+  </g>
+
+  <!-- ============ CATEGORY ============ -->
+  <g>
+    <rect x="40" y="190" width="220" height="110" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="1"/>
+    <rect x="40" y="190" width="220" height="30" rx="8" fill="#5F5E5A"/>
+    <rect x="40" y="205" width="220" height="15" fill="#5F5E5A"/>
+    <text x="150" y="210" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">CATEGORY</text>
+    <text x="55" y="240" font-size="12" fill="#2C2C2A">PK  id : long</text>
+    <text x="55" y="260" font-size="12" fill="#2C2C2A">     name : string</text>
+    <text x="55" y="280" font-size="11" fill="#888780">(nullable FK from Product)</text>
+  </g>
+
+  <!-- ============ PRODUCT ============ -->
+  <g>
+    <rect x="360" y="100" width="260" height="230" rx="8" fill="#EAF3DE" stroke="#639922" stroke-width="1.2"/>
+    <rect x="360" y="100" width="260" height="34" rx="8" fill="#3B6D11"/>
+    <rect x="360" y="118" width="260" height="16" fill="#3B6D11"/>
+    <text x="490" y="122" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="bold">PRODUCT</text>
+    <text x="375" y="156" font-size="12.5" fill="#173404">PK  id : long</text>
+    <text x="375" y="178" font-size="12.5" fill="#173404">     name : string</text>
+    <text x="375" y="200" font-size="12.5" fill="#173404">     price : long</text>
+    <text x="375" y="222" font-size="12.5" fill="#173404">     costPrice : long (nullable)</text>
+    <text x="375" y="244" font-size="12.5" fill="#173404">     stock : int</text>
+    <text x="375" y="266" font-size="12.5" fill="#173404">FK  supplierId (nullable)</text>
+    <text x="375" y="288" font-size="12.5" fill="#173404">FK  categoryId (nullable)</text>
+    <text x="375" y="312" font-size="11" fill="#3b6d11">categoryId: 지금은 컬럼만, CRUD는 통계 단계</text>
+  </g>
+
+  <!-- Supplier -> Product -->
+  <line x1="260" y1="95" x2="400" y2="150" stroke="#888780" stroke-width="1.2"/>
+  <text x="290" y="105" font-size="11" fill="#5F5E5A">1:N</text>
+  <!-- Category -> Product -->
+  <line x1="260" y1="245" x2="400" y2="240" stroke="#888780" stroke-width="1.2"/>
+  <text x="290" y="235" font-size="11" fill="#5F5E5A">1:N</text>
+
+  <!-- ============ CUSTOMER ============ -->
+  <g>
+    <rect x="880" y="40" width="260" height="190" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.2"/>
+    <rect x="880" y="40" width="260" height="34" rx="8" fill="#185FA5"/>
+    <rect x="880" y="58" width="260" height="16" fill="#185FA5"/>
+    <text x="1010" y="62" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="bold">CUSTOMER</text>
+    <text x="895" y="96" font-size="12.5" fill="#042C53">PK  id : long</text>
+    <text x="895" y="118" font-size="12.5" fill="#042C53">     customerId : string (unique)</text>
+    <text x="895" y="140" font-size="12.5" fill="#042C53">     customerPassword : string</text>
+    <text x="895" y="162" font-size="12.5" fill="#042C53">     customerName : string</text>
+    <text x="895" y="184" font-size="12.5" fill="#042C53">     point : long</text>
+    <text x="895" y="206" font-size="11" fill="#185fa5">1:N → CustomerHolding, OrderLog</text>
+  </g>
+
+  <!-- ============ CUSTOMER_HOLDING ============ -->
+  <g>
+    <rect x="360" y="420" width="260" height="180" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="1.2"/>
+    <rect x="360" y="420" width="260" height="34" rx="8" fill="#854F0B"/>
+    <rect x="360" y="438" width="260" height="16" fill="#854F0B"/>
+    <text x="490" y="442" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">CUSTOMER_HOLDING</text>
+    <text x="375" y="476" font-size="12.5" fill="#412402">PK  id : long</text>
+    <text x="375" y="498" font-size="12.5" fill="#412402">FK  customerId</text>
+    <text x="375" y="520" font-size="12.5" fill="#412402">FK  productId</text>
+    <text x="375" y="542" font-size="12.5" fill="#412402">     quantity : int</text>
+    <text x="375" y="564" font-size="12.5" fill="#412402">     orderedAt : datetime</text>
+    <text x="375" y="586" font-size="10.5" fill="#854f0b">unique(customerId, productId) · 현재 보유 상태</text>
+  </g>
+
+  <!-- ============ ORDER_LOG ============ -->
+  <g>
+    <rect x="880" y="420" width="260" height="200" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="1.2"/>
+    <rect x="880" y="420" width="260" height="34" rx="8" fill="#854F0B"/>
+    <rect x="880" y="438" width="260" height="16" fill="#854F0B"/>
+    <text x="1010" y="442" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">ORDER_LOG</text>
+    <text x="895" y="476" font-size="12.5" fill="#412402">PK  id : long</text>
+    <text x="895" y="498" font-size="12.5" fill="#412402">FK  customerId</text>
+    <text x="895" y="520" font-size="12.5" fill="#412402">FK  productId</text>
+    <text x="895" y="542" font-size="12.5" fill="#412402">     type : ORDER | CANCEL</text>
+    <text x="895" y="564" font-size="12.5" fill="#412402">     quantity : int</text>
+    <text x="895" y="586" font-size="12.5" fill="#412402">     priceAtOrder : long</text>
+    <text x="895" y="606" font-size="10.5" fill="#854f0b">insert-only · 불변 이력 로그</text>
+  </g>
+
+  <!-- Customer -> Holding -->
+  <path d="M 1000 230 C 900 300, 700 350, 560 420" fill="none" stroke="#5F5E5A" stroke-width="1.3"/>
+  <text x="770" y="330" font-size="11" fill="#5F5E5A">1:N</text>
+
+  <!-- Customer -> OrderLog -->
+  <line x1="1010" y1="230" x2="1010" y2="420" stroke="#5F5E5A" stroke-width="1.3"/>
+  <text x="1020" y="330" font-size="11" fill="#5F5E5A">1:N</text>
+
+  <!-- Product -> Holding -->
+  <line x1="490" y1="330" x2="490" y2="420" stroke="#5F5E5A" stroke-width="1.3"/>
+  <text x="500" y="380" font-size="11" fill="#5F5E5A">1:N</text>
+
+  <!-- Product -> OrderLog -->
+  <path d="M 620 220 C 780 280, 900 340, 950 420" fill="none" stroke="#5F5E5A" stroke-width="1.3"/>
+  <text x="790" y="290" font-size="11" fill="#5F5E5A">1:N</text>
+
+  <!-- ============ 범례 ============ -->
+  <g>
+    <text x="40" y="660" font-size="13" font-weight="bold" fill="#2C2C2A">범례</text>
+    <rect x="40" y="675" width="16" height="16" fill="#E6F1FB" stroke="#378ADD"/>
+    <text x="64" y="688" font-size="12" fill="#2C2C2A">Customer - 인증/포인트 주체</text>
+    <rect x="280" y="675" width="16" height="16" fill="#EAF3DE" stroke="#639922"/>
+    <text x="304" y="688" font-size="12" fill="#2C2C2A">Product - 상품(판매가/원가/재고)</text>
+    <rect x="560" y="675" width="16" height="16" fill="#FAEEDA" stroke="#BA7517"/>
+    <text x="584" y="688" font-size="12" fill="#2C2C2A">Holding/OrderLog - 상태 / 이력</text>
+    <rect x="840" y="675" width="16" height="16" fill="#F1EFE8" stroke="#888780"/>
+    <text x="864" y="688" font-size="12" fill="#2C2C2A">Supplier/Category - 통계 기반 마스터</text>
+  </g>
+
+  <text x="40" y="730" font-size="12" fill="#5F5E5A">CustomerHolding = "현재 보유 수량" (재주문 누적 / 취소 차감 / 0이면 삭제, mutable)</text>
+  <text x="40" y="752" font-size="12" fill="#5F5E5A">OrderLog = 주문·취소 "행위" 자체의 불변 로그 (통계·집계 쿼리의 원본 데이터)</text>
+  <text x="40" y="774" font-size="12" fill="#5F5E5A">Product.costPrice / supplierId / categoryId 는 전부 nullable — 샘플/사은품 등 매입 관계 없는 상품 허용</text>
+
+  <text x="600" y="805" text-anchor="middle" font-size="11" fill="#B4B2A9">SKALA-SHOP ERD — Entity 스펙 확정본</text>
+</svg>
