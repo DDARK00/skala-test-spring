@@ -53,21 +53,21 @@ INSERT INTO product (name, price, cost_price, stock, supplier_id, category_id) V
 INSERT INTO product (name, price, cost_price, stock, supplier_id, category_id) VALUES ('블루투스키보드', 29000, 18000, 255, 5, 2);
 
 -- 4. Customer
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user001', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '박도윤', 1000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user002', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '오다인', 0);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user003', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '장서준', 19000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user004', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '정하은', 6000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user005', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '김민준', 3000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user006', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '윤은우', 744000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user007', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '신소율', 108000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user008', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '임하윤', 27000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user009', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '강시우', 5000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user010', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '권태윤', 4000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user011', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '한지호', 9000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user012', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '서예준', 24000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user013', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '이서연', 7000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user014', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '최지우', 5000);
-INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('user015', '$2b$10$sc93V0ke404Wtm7uU1FPaefGz5zbaoZZhnCyD4g5/Xt2b2beKR0eK', '조유나', 14000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala01', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '박도윤', 1000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala02', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '오다인', 0);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala03', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '장서준', 19000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala04', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '정하은', 6000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala05', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '김민준', 3000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala06', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '윤은우', 744000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala07', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '신소율', 108000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala08', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '임하윤', 27000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala09', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '강시우', 5000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala10', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '권태윤', 4000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala11', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '한지호', 9000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala12', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '서예준', 24000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala13', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '이서연', 7000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala14', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '최지우', 5000);
+INSERT INTO customer (customer_id, customer_password, customer_name, point) VALUES ('skala15', '$2b$10$4gjIkDI11dftaCxXSqpCtOE.A4Vhbtxn2HYjroLik8GYlVSCLOc7y', '조유나', 14000);
 
 -- 5. CustomerHolding (최종 순보유 수량, 0 이하인 쌍은 제외)
 INSERT INTO customer_holding (customer_id, product_id, quantity, ordered_at) VALUES (1, 2, 1, '2026-07-07 08:52:00');

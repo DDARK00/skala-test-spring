@@ -122,7 +122,7 @@ def generate_customers(n):
         signup_point = random.choice([200000, 500000, 800000, 1200000, 2000000])
         customers.append({
             "id": i + 1,
-            "customer_id": f"user{i + 1:03d}",
+            "customer_id": f"skala{i + 1:02d}",
             "customer_password": pw_hash,
             "customer_name": names[i],
             "signup_point": signup_point,  # PointHistory의 SIGNUP_BONUS 값
