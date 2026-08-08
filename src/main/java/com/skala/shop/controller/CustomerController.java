@@ -1,5 +1,6 @@
 package com.skala.shop.controller;
 
+import com.skala.shop.config.CookieProperties;
 import com.skala.shop.data.dto.*;
 import com.skala.shop.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,7 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final CookieProperties cookieProperties;
 
     @Operation(summary = "회원가입", description = "신규 고객을 등록합니다. point를 지정하지 않으면 기본 정책값(설정된 기본 포인트)이 지급되고, "
             + "이벤트 등으로 특정 포인트를 지급하려면 point 값을 직접 지정합니다.")
@@ -39,6 +41,8 @@ public class CustomerController {
 
         ResponseCookie cookie = ResponseCookie.from("bff-access", token)
                 .httpOnly(true)
+                .secure(cookieProperties.isSecure())      // 배포(HTTPS)에서는 true, 로컬(HTTP)에서는 false
+                .sameSite(cookieProperties.getSameSite()) // 크로스오리진 프론트 대응: 배포는 None, 로컬은 Lax
                 .path("/")
                 .maxAge(3600)
                 .build();

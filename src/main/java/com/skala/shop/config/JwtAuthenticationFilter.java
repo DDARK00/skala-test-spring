@@ -32,6 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         String method = request.getMethod();
 
+        // CORS preflight 요청은 인증 없이 항상 통과 (쿠키가 안 실려오므로 그대로 두면 무조건 401)
+        if ("OPTIONS".equalsIgnoreCase(method)) return true;
+
         if (uri.equals("/api/customers") && "POST".equalsIgnoreCase(method)) return true;
         if (uri.equals("/api/customers/login") && "POST".equalsIgnoreCase(method)) return true;
         if (uri.startsWith("/api/products") && "GET".equalsIgnoreCase(method)) return true;

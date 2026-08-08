@@ -1,0 +1,29 @@
+# src/main/resources/application-prod.yaml
+# 운영 배포 시 SPRING_PROFILES_ACTIVE=prod 로 활성화
+# application.yaml의 기본값을 오버라이드/보강하는 용도
+
+spring:
+  h2:
+    console:
+      enabled: false   # 운영 환경에서 DB 콘솔 퍼블릭 노출 차단 (보안 필수)
+
+  jpa:
+    show-sql: false    # 운영 로그 노이즈 감소
+
+logging:
+  level:
+    com.skala.shop: INFO   # 운영에서는 DEBUG 대신 INFO
+    org.springframework.web: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics   # 운영에서는 "*" 대신 필요한 것만 노출 (env/beans 등 민감 endpoint 차단)
+
+shop:
+  cookie:
+    secure: true       # 배포는 HTTPS이므로 Secure 쿠키 필수
+    same-site: None    # 프론트가 다른 도메인(GitHub Pages 등)에서 호출하는 크로스오리진 대응
+  # cors.allowed-origins는 SHOP_CORS_ALLOWED_ORIGINS 환경변수로 실제 배포된 프론트 도메인을 지정할 것
+  # 예: SHOP_CORS_ALLOWED_ORIGINS=https://<username>.github.io
