@@ -16,11 +16,20 @@
 
 ---
 
-## 2. 배포 URL / 로컬 실행
+## 2. 배포 / 실행
 
-**배포 URL**: `https://skala-test-spring.onrender.com/`
+| 항목 | 링크 |
+|---|---|
+| **API 서버 (배포)** | https://skala-test-spring.onrender.com |
+| **Swagger UI** | https://skala-test-spring.onrender.com/swagger-ui.html |
+| **테스트 프론트엔드 (GitHub Pages)** | https://ddark00.github.io/skala-test-spring/ |
 
-**Swagger UI**: `https://skala-test-spring.onrender.com/swagger-ui.html`
+API를 직접 확인하고 싶다면 **Swagger UI와 테스트 프론트엔드 둘 다 참고**하세요. 성격이 다릅니다.
+
+- **Swagger UI**: 모든 엔드포인트의 요청/응답 스키마, 검증 규칙(필드 타입, 필수 여부 등)을 정확히 확인할 때
+- **테스트 프론트엔드**: 로그인 → 주문 → 취소 흐름을 실제로 눌러보며 포인트/재고 변화를 눈으로 확인하고, 그 과정에서 오간 실제 Request/Response를 그대로 볼 때 (7.9절 참고)
+
+> Render 무료 인스턴스는 유휴 시간이 지나면 슬립 상태가 됩니다. 첫 요청은 콜드스타트로 몇 초~십수 초 걸릴 수 있습니다.
 
 ### 로컬 실행
 
@@ -55,7 +64,8 @@ docker run -p 8080:8080 -e SHOP_JWT_SECRET="local-test-secret-key-change-me" ska
 | API 문서화 | springdoc-openapi (Swagger UI) |
 | 모니터링 | Spring Boot Actuator + Micrometer |
 | 빌드 | Gradle |
-| 배포 | Docker (멀티스테이지 빌드) |
+| 배포 (백엔드) | Docker (멀티스테이지 빌드) → Render |
+| 테스트 프론트엔드 | 바닐라 HTML/CSS/JS 단일 페이지 → GitHub Pages |
 
 ---
 
@@ -65,32 +75,34 @@ docker run -p 8080:8080 -e SHOP_JWT_SECRET="local-test-secret-key-change-me" ska
 
 - **CUSTOMER_HOLDING**: 고객의 "현재 보유 수량" — 재주문 시 누적, 취소 시 차감, 0이면 삭제 (mutable)
 - **ORDER_LOG**: 주문/취소 "행위" 자체의 불변 이력 (insert-only, 통계 쿼리의 원본 데이터)
-- **POINT_HISTORY / STOCK_HISTORY**: 포인트·재고 변동 이력 (회계원장 원칙, 5번 섹션 참고)
+- **POINT_HISTORY / STOCK_HISTORY**: 포인트·재고 변동 이력 (회계원장 원칙, 7.2절 참고)
 - **SUPPLIER / CATEGORY**: 매입처·분류 마스터 (nullable FK — 매입 관계 없는 상품도 허용)
 
 ---
 
 ## 5. API 목록
 
-전체 요청/응답 스키마(필드 타입, 검증 규칙)는 Swagger UI(`/swagger-ui.html`)에서 확인 가능합니다. 아래는 빠른 접근을 위한 링크/curl 모음입니다. `BASE_URL`은 로컬(`http://localhost:8080`) 또는 배포 주소로 대체하세요.
+전체 요청/응답 스키마는 [Swagger UI](https://skala-test-spring.onrender.com/swagger-ui.html)에서 확인 가능합니다. 아래는 빠른 접근을 위한 링크/curl 모음입니다.
 
 ### 조회(GET) — 클릭하면 바로 JSON 응답 확인
 
 | API | 설명 | 링크 |
 |---|---|---|
-| 상품 목록 | 페이지 단위 상품 조회 | [`/api/products`](http://localhost:8080/api/products) |
-| 상품 상세 | id로 단건 조회 | [`/api/products/1`](http://localhost:8080/api/products/1) |
-| 상품별 판매 통계 | 순매출/마진 순위 | [`/api/stats/products`](http://localhost:8080/api/stats/products) |
-| 일별 매출 추이 | 날짜별 순매출 | [`/api/stats/daily`](http://localhost:8080/api/stats/daily) |
-| 카테고리별 판매 비중 | | [`/api/stats/categories`](http://localhost:8080/api/stats/categories) |
-| 상품별 취소율 순위 | | [`/api/stats/cancel-rate`](http://localhost:8080/api/stats/cancel-rate) |
-| 공급업체별 실적 | 매입 대비 판매 | [`/api/stats/suppliers`](http://localhost:8080/api/stats/suppliers) |
+| 상품 목록 | 페이지 단위 상품 조회 | [`/api/products`](https://skala-test-spring.onrender.com/api/products) |
+| 상품 상세 | id로 단건 조회 | [`/api/products/1`](https://skala-test-spring.onrender.com/api/products/1) |
+| 상품별 판매 통계 | 순매출/마진 순위 | [`/api/stats/products`](https://skala-test-spring.onrender.com/api/stats/products) |
+| 일별 매출 추이 | 날짜별 순매출 | [`/api/stats/daily`](https://skala-test-spring.onrender.com/api/stats/daily) |
+| 카테고리별 판매 비중 | | [`/api/stats/categories`](https://skala-test-spring.onrender.com/api/stats/categories) |
+| 상품별 취소율 순위 | | [`/api/stats/cancel-rate`](https://skala-test-spring.onrender.com/api/stats/cancel-rate) |
+| 공급업체별 실적 | 매입 대비 판매 | [`/api/stats/suppliers`](https://skala-test-spring.onrender.com/api/stats/suppliers) |
 
-> 고객 조회(`/api/customers`, `/api/customers/{id}` 등)는 로그인이 필요해 링크만으로는 확인이 안 됩니다. 아래 curl 예시를 참고하세요.
+> 고객 조회(`/api/customers`, `/api/customers/{id}` 등)는 로그인이 필요해 링크만으로는 확인이 안 됩니다. curl 예시 또는 테스트 프론트엔드를 이용하세요.
 
 ### 쓰기(POST/PUT/DELETE) — curl 예시
 
 ```bash
+BASE_URL=https://skala-test-spring.onrender.com
+
 # 회원가입
 curl -X POST $BASE_URL/api/customers \
   -H "Content-Type: application/json" \
@@ -125,6 +137,7 @@ curl -b cookie.txt -X POST $BASE_URL/api/products \
 - 이후 인증이 필요한 API는 이 Cookie에서 JWT를 추출해 고객을 식별합니다 (`JwtAuthenticationFilter`).
 - 인증 불필요: 회원가입, 로그인, 상품 조회(GET), 통계 조회
 - 인증 필요: 그 외 `/api/customers/*` 전부 (목록/상세/수정/삭제/주문/취소), 상품 등록/수정/삭제
+- 별도의 로그아웃 API는 없습니다 — 테스트 프론트엔드의 "로그아웃"은 클라이언트 세션 상태만 초기화하며, 서버 쿠키는 만료시간(기본 1시간)이 지나야 무효화됩니다.
 
 ---
 
@@ -149,7 +162,7 @@ curl -b cookie.txt -X POST $BASE_URL/api/products \
 - 상품 정보 수정으로 재고 변경 → `StockHistory(PURCHASE_IN 또는 ADJUSTMENT)` 적재 (증가/감소에 따라 구분)
 - 회원가입 → `PointHistory(SIGNUP_BONUS)` 적재
 
-이 원칙 덕분에 "왜 지금 이 값이 됐는지"를 항상 이력으로 추적할 수 있고, 초기 데이터 생성기(`generate_data.py`)도 이 정합성을 독립적으로 재검증합니다 (16번 섹션 참고).
+이 원칙 덕분에 "왜 지금 이 값이 됐는지"를 항상 이력으로 추적할 수 있고, 초기 데이터 생성기(`generate_data.py`)도 이 정합성을 독립적으로 재검증합니다 (9절 참고).
 
 ### 7.3 동시성 제어 — 비관적 락
 
@@ -187,18 +200,51 @@ JPA는 CRUD와 트랜잭션이 필요한 쓰기 작업(주문/취소)에, MyBati
 
 `JwtAuthenticationFilter`에서 요청마다 `requestId`(UUID)를 발급하고 인증된 `customerId`와 함께 MDC에 저장합니다. 이후 해당 요청 흐름에서 발생하는 모든 로그(Controller, Service, 예외 핸들러)에 자동으로 `reqId`/`customerId`가 붙어, 로그를 `reqId` 기준으로 grep하면 한 요청의 전체 처리 흐름을 추적할 수 있습니다. 스레드 재사용 대비 `finally` 블록에서 반드시 `MDC.clear()`를 호출합니다.
 
+### 7.9 CORS / 쿠키 — 프론트엔드를 별도 오리진(GitHub Pages)에 배포하며 대응한 것
+
+백엔드(Render)와 프론트엔드(GitHub Pages)가 서로 다른 도메인이라, 브라우저의 동일-오리진 정책과 쿠키 정책을 함께 다뤄야 했습니다.
+
+- **CORS**: `CorsFilter`를 `FilterRegistrationBean`으로 감싸 `Ordered.HIGHEST_PRECEDENCE`로 등록했습니다. `JwtAuthenticationFilter`보다 먼저 실행되어야, preflight(`OPTIONS`) 요청이 인증 필터에 걸려 401로 막히기 전에 CORS 헤더가 먼저 응답됩니다. 허용 오리진은 `SHOP_CORS_ALLOWED_ORIGINS` 환경변수로 관리하며 와일드카드(`*`)는 쓰지 않습니다 — `Access-Control-Allow-Credentials: true`와 와일드카드는 스펙상 함께 쓸 수 없기 때문입니다.
+- **Preflight 예외 처리**: `JwtAuthenticationFilter.shouldNotFilter()`에서 `OPTIONS` 메서드는 무조건 통과시킵니다. Preflight 요청엔 쿠키가 실리지 않아, 이 예외가 없으면 모든 preflight가 401로 실패합니다.
+- **Cookie 속성**: `secure`/`sameSite`를 `CookieProperties`로 분리해 프로필별로 다르게 적용합니다. 로컬(HTTP)은 `secure=false, sameSite=Lax`, 운영(HTTPS, 크로스오리진)은 `secure=true, sameSite=None`입니다. `SameSite=None`은 `Secure` 없이는 브라우저가 거부하므로 반드시 세트로 적용해야 합니다.
+
 ---
 
-## 8. 알려진 제약사항
+## 8. 테스트 프론트엔드
+
+**목적**: Swagger는 요청마다 인증 상태를 눈으로 확인하기 어렵고, 통계처럼 표로 보는 게 나은 데이터도 raw JSON으로만 보여줍니다. 이를 보완하기 위해 만든 API 테스트 콘솔입니다. (실제 커머스 서비스 UI를 지향하지 않습니다 — 이 프로젝트의 초점은 백엔드입니다.)
+
+**컨셉**: 백엔드의 "회계원장 원칙"(7.2절)을 그대로 시각화했습니다. 모든 API 호출이 하단에 **영수증처럼 인쇄되는 로그 테이프**로 쌓이고, `SUCCESS`(정상 처리) / `REJECTED`(비즈니스 규칙 거부) / `FAILED`(시스템 오류) 스탬프가 찍히며, 펼치면 실제 Request/Response JSON 원문을 그대로 볼 수 있습니다.
+
+**구성**:
+- 로그인/회원가입 + 세션 상태(포인트 잔액) 상시 표시
+- 상품 목록 + 주문
+- 보유 상품 목록 + 취소
+- 통계 5종 (표 + 막대 시각화)
+- Raw Request/Response 로그 테이프 (시그니처 요소)
+
+**기술**: 바닐라 HTML/CSS/JS 단일 파일(`frontend/index.html`), 별도 빌드 도구 없음. `API_BASE` 상수만 바꾸면 다른 백엔드 주소로도 즉시 연결됩니다.
+
+### GitHub Pages 배포 방법
+
+1. `index.html`을 저장소 루트 또는 `/docs` 폴더에 배치
+2. 같은 위치에 빈 파일 `.nojekyll` 추가 (Jekyll 처리로 인한 정적 파일 누락 방지)
+3. GitHub 저장소 → Settings → Pages → Source: `Deploy from a branch`, 브랜치와 폴더 선택
+4. 배포된 프론트 도메인(`https://<username>.github.io`, 경로 제외)을 백엔드의 `SHOP_CORS_ALLOWED_ORIGINS`에 추가 후 재배포
+
+---
+
+## 9. 알려진 제약사항
 
 - **Role 기반 인가 미도입**: 현재는 관리자/일반 사용자 구분 없이 인증 여부만 검사하는 열린 구조입니다. `Customer`에 role 필드 추가 + JWT 클레임 확장만으로 인가 체계를 얹을 수 있도록, 인증 로직(`JwtTokenProvider`, `JwtAuthenticationFilter`)은 이 확장을 염두에 두고 설계했습니다.
 - **Micrometer Timer의 min 값은 근사치**: `order.service.duration` 메트릭의 최소 실행시간은 percentile(0.0) 기반 근사치이며, 정확한 min이 아닙니다. 완전히 정확한 min이 필요하면 별도 `DistributionSummary`/커스텀 Gauge가 필요하나, 현재 규모에서는 과도한 설계로 판단해 적용하지 않았습니다.
 - **MyBatis 통계 쿼리의 H2 종속성**: 일별 매출 추이 쿼리에서 `FORMATDATETIME`(H2 전용 함수)를 사용합니다. 다른 DBMS로 이전 시 `DATE_FORMAT`(MySQL) 또는 `TO_CHAR`(PostgreSQL) 등으로 교체가 필요합니다.
 - **H2 인메모리의 휘발성**: 배포 환경에서 컨테이너가 재시작되면 데이터와 `audit.log` 파일이 초기화됩니다. 데모/실습 목적에서는 매번 깨끗한 초기 상태로 시작된다는 장점으로 볼 수도 있습니다.
+- **로그아웃 미구현**: 서버 측 토큰 무효화(블랙리스트 등) 없이 만료시간에만 의존합니다. 테스트 프론트엔드의 로그아웃은 클라이언트 상태만 초기화합니다.
 
 ---
 
-## 9. 초기 데이터
+## 10. 초기 데이터
 
 `data.sql`은 회계원장 원칙(재고/포인트가 각 이력의 합산과 항상 일치)을 지키도록, 손으로 SQL을 작성하는 대신 Python 생성기로 만들었습니다.
 
@@ -211,9 +257,9 @@ python3 generate_data.py
 
 ---
 
-## 10. 테스트
+## 11. 테스트
 
-### 10.1 JUnit (서버 기동 불필요)
+### 11.1 JUnit (서버 기동 불필요)
 
 ```bash
 ./gradlew test
@@ -227,7 +273,7 @@ python3 generate_data.py
 
 애플리케이션 서버(8080)를 띄우지 않아도 `./gradlew test` 한 줄로 전부 실행됩니다.
 
-### 10.2 통합 테스트 (서버 기동 필요)
+### 11.2 통합 테스트 (서버 기동 필요)
 
 ```bash
 ./gradlew bootRun   # 먼저 서버 기동
@@ -243,9 +289,9 @@ python3 generate_data.py
 
 ---
 
-## 11. Docker / 배포
+## 12. Docker / 배포
 
-멀티스테이지 빌드로, Gradle 빌드 단계와 실행 단계의 이미지를 분리해 최종 이미지 크기를 최소화했습니다.
+멀티스테이지 빌드로, Gradle 빌드 단계와 실행 단계의 이미지를 분리해 최종 이미지 크기를 최소화했습니다. non-root 사용자로 실행하며, 로그 디렉토리(`/app/logs`)는 사용자 전환 전에 미리 만들고 소유권을 부여합니다 (그렇지 않으면 Logback이 파일을 생성하지 못해 기동에 실패합니다).
 
 ### 환경변수
 
@@ -255,7 +301,8 @@ python3 generate_data.py
 | `SHOP_DEFAULT_POINT` | 선택 | 10000 | 회원가입 기본 포인트 정책 |
 | `SHOP_JWT_EXPIRATION` | 선택 | 3600000 (1시간) | 토큰 만료시간(ms) |
 | `PORT` | 선택 | 8080 | 배포 플랫폼이 자동 주입 |
-| `SPRING_PROFILES_ACTIVE` | 선택 | 없음 | `prod`로 설정 시 H2 콘솔 비활성화, Actuator 노출 범위 축소 |
+| `SPRING_PROFILES_ACTIVE` | 선택 | 없음 | `prod`로 설정 시 H2 콘솔 비활성화, Actuator 노출 범위 축소, 쿠키 secure/sameSite 전환 |
+| `SHOP_CORS_ALLOWED_ORIGINS` | 선택 (배포 시 사실상 필수) | `http://localhost:5500,http://127.0.0.1:5500` | 프론트엔드가 실제로 접속하는 오리진 목록 (콤마 구분, 경로 제외) |
 
 `SHOP_JWT_SECRET`은 의도적으로 기본값을 두지 않았습니다 — 값이 없으면 기동 자체가 실패하도록(fail-fast) 해서, 운영 배포 시 시크릿 설정 누락을 사전에 차단합니다.
 
@@ -263,5 +310,5 @@ python3 generate_data.py
 
 1. GitHub 저장소 연결
 2. Dockerfile 자동 감지
-3. Environment Variables에 `SHOP_JWT_SECRET`, `SPRING_PROFILES_ACTIVE=prod` 등록
+3. Environment Variables에 `SHOP_JWT_SECRET`, `SPRING_PROFILES_ACTIVE=prod`, `SHOP_CORS_ALLOWED_ORIGINS` 등록
 4. Health Check Path: `/actuator/health`
